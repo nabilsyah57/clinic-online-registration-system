@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pendaftaran Online – Klinik Pratama Sehat Bersama</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0d9488;--teal-dark:#0f766e;--teal-light:#ccfbf1;--teal-bg:#f0fdfa;
+  --slate:#0f172a;--muted:#64748b;--border:#e2e8f0;--white:#ffffff;
+  --red:#ef4444;--amber:#f59e0b;--green:#10b981;
+  --radius:12px;--radius-sm:8px;--radius-lg:16px;--shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135deg,#f0fdfa 0%,#e0f2fe 100%);min-height:100vh;color:var(--slate);line-height:1.6}
+h1,h2,h3,h4{font-family:'Outfit',sans-serif}
+
+/* ── Header ── */
+.header{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.header-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:40px;height:40px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.logo-text{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:var(--slate);line-height:1.2}
+.logo-sub{font-size:11px;font-weight:400;color:var(--muted)}
+.header-actions{display:flex;gap:8px}
+.btn-maps,.btn-wa{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .15s}
+.btn-maps{background:#fff3e0;color:#e65100}
+.btn-maps:hover{background:#ffe0b2}
+.btn-wa{background:#dcfce7;color:#15803d}
+.btn-wa:hover{background:#bbf7d0}
+.btn-maps svg,.btn-wa svg{width:14px;height:14px}
+
+/* ── Container ── */
+.container{max-width:720px;margin:0 auto;padding:28px 20px 60px}
+
+/* ── Progress ── */
+.progress-wrap{margin-bottom:28px}
+.progress-steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:12px}
+.step-dot{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative}
+.step-dot:not(:last-child)::after{content:'';position:absolute;top:16px;left:calc(50% + 16px);width:calc(100% - 32px);height:2px;background:var(--border);transition:background .3s}
+.step-dot.done:not(:last-child)::after{background:var(--teal)}
+.dot-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);transition:all .3s;font-family:'Outfit',sans-serif}
+.step-dot.active .dot-circle{border-color:var(--teal);background:var(--teal);color:#fff;box-shadow:0 0 0 4px var(--teal-light)}
+.step-dot.done .dot-circle{border-color:var(--teal);background:var(--teal);color:#fff}
+.dot-label{font-size:10px;font-weight:600;color:var(--muted);text-align:center;white-space:nowrap}
+.step-dot.active .dot-label{color:var(--teal)}
+.step-dot.done .dot-label{color:var(--teal-dark)}
+
+/* ── Cards ── */
+.card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;animation:fadeUp .35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.card-icon{width:44px;height:44px;border-radius:10px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-icon svg{width:22px;height:22px;stroke:var(--teal);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-title{font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:var(--slate)}
+.card-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.card-body{padding:24px}
+
+/* ── Type selector ── */
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.type-card{border:2px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .2s;text-align:center;background:#fff}
+.type-card:hover{border-color:#99f6e4;background:var(--teal-bg)}
+.type-card.selected{border-color:var(--teal);background:var(--teal-bg);box-shadow:0 0 0 3px var(--teal-light)}
+.type-icon{font-size:36px;margin-bottom:8px}
+.type-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:var(--slate)}
+.type-desc{font-size:12px;color:var(--muted);margin-top:3px}
+
+/* ── Form ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12px;font-weight:600;color:var(--slate);letter-spacing:.01em}
+label span{color:var(--red)}
+input,select,textarea{padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;color:var(--slate);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-light)}
+input.err,select.err{border-color:var(--red)}
+.err-msg{font-size:11px;color:var(--red);margin-top:2px}
+.nik-hint{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* ── Time slots ── */
+.jadwal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.jadwal-date{font-size:13px;font-weight:600;color:var(--teal-dark);background:var(--teal-bg);padding:6px 12px;border-radius:20px;border:1px solid #99f6e4}
+.slot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.slot{padding:10px 6px;border:1.5px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;transition:all .2s;background:#fff;font-size:13px;font-weight:600;font-family:'Outfit',sans-serif}
+.slot:hover:not(.taken){border-color:#99f6e4;background:var(--teal-bg)}
+.slot.selected{border-color:var(--teal);background:var(--teal);color:#fff;box-shadow:0 0 0 3px var(--teal-light)}
+.slot.taken{background:#f8fafc;color:#cbd5e1;cursor:not-allowed;border-color:#f1f5f9}
+.slot-time{display:block;font-size:13px}
+.slot-count{font-size:10px;font-weight:400;margin-top:1px;opacity:.75}
+.slot.selected .slot-count{opacity:.85;color:#ccfbf1}
+.legend{display:flex;gap:12px;margin-top:12px;justify-content:flex-end}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:3px}
+
+/* ── Keluhan ── */
+.keluhan-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{padding:6px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;transition:all .2s;color:var(--muted)}
+.chip:hover{border-color:#99f6e4;background:var(--teal-bg);color:var(--teal-dark)}
+.chip.selected{border-color:var(--teal);background:var(--teal-light);color:var(--teal-dark)}
+
+/* ── Buttons ── */
+.btn-row{display:flex;gap:12px;margin-top:24px}
+.btn{padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;gap:6px}
+.btn-primary{background:var(--teal);color:#fff;flex:1;justify-content:center}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(13,148,136,.3)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{background:#f1f5f9;color:var(--muted);font-weight:600}
+.btn-secondary:hover{background:#e2e8f0}
+.btn-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Sukses / Antrian ── */
+.antrian-wrap{text-align:center;padding:8px 0 16px}
+.antrian-badge{display:inline-block;background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;border-radius:20px;padding:8px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.antrian-number{font-family:'Outfit',sans-serif;font-size:80px;font-weight:800;color:var(--teal);line-height:1;margin-bottom:4px;letter-spacing:-2px}
+.antrian-sub{font-size:14px;color:var(--muted)}
+.antrian-info{background:var(--teal-bg);border:1px solid #99f6e4;border-radius:12px;padding:16px;margin-top:20px;text-align:left}
+.info-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #ccfbf1;font-size:13px}
+.info-row:last-child{border:none}
+.info-label{color:var(--muted);font-weight:600;min-width:130px;flex-shrink:0;font-size:12px}
+.info-val{color:var(--slate);font-weight:500}
+.action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.action-btn{padding:12px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-decoration:none;font-family:'Outfit',sans-serif}
+.action-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.action-wa{background:#25d366;color:#fff}
+.action-maps{background:#4285f4;color:#fff}
+.action-wa svg,.action-maps svg{width:18px;height:18px;fill:currentColor}
+
+/* ── QR Section ── */
+.qr-section{margin-top:24px;padding:20px;background:#fff;border:1px solid var(--border);border-radius:12px;text-align:center}
+.qr-title{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:4px}
+.qr-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+#qrcode{display:flex;justify-content:center}
+#qrcode canvas,#qrcode img{border-radius:8px;border:4px solid var(--teal-light)}
+.qr-link{font-size:11px;color:var(--teal);margin-top:8px;word-break:break-all}
+
+/* ── Info klinik ── */
+.info-klinik{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);border:1px solid var(--border);padding:20px 24px;margin-bottom:24px;display:flex;gap:16px;align-items:center;animation:fadeUp .3s ease both}
+.info-klinik-icon{width:52px;height:52px;background:var(--teal-bg);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.info-klinik-icon svg{width:28px;height:28px;stroke:var(--teal);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.info-klinik-detail{flex:1}
+.info-klinik-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;color:var(--slate)}
+.info-klinik-meta{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+.meta-item{display:flex;align-items:center;gap:4px}
+.meta-item svg{width:12px;height:12px;stroke:var(--teal);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.badge-jam{background:var(--teal-light);color:var(--teal-dark);font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;border:1px solid #99f6e4}
+
+/* ── Alert ── */
+.alert{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.alert svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* ── Tanggal picker ── */
+.tanggal-wrap{display:flex;gap:10px;margin-bottom:20px}
+.tanggal-btn{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--muted);transition:all .2s;text-align:center}
+.tanggal-btn:hover{border-color:#99f6e4;background:var(--teal-bg)}
+.tanggal-btn.active{border-color:var(--teal);background:var(--teal);color:#fff}
+.tanggal-btn .tgl-num{display:block;font-size:20px;font-weight:800;line-height:1.1}
+.tanggal-btn .tgl-hari{display:block;font-size:10px;opacity:.8;margin-top:2px}
+
+@media(max-width:520px){
+  .form-grid{grid-template-columns:1fr}
+  .slot-grid{grid-template-columns:repeat(3,1fr)}
+  .type-grid{grid-template-columns:1fr 1fr}
+  .header-actions{gap:4px}
+  .btn-maps span,.btn-wa span{display:none}
+  .antrian-number{font-size:64px}
+  .action-buttons{grid-template-columns:1fr}
+  .info-klinik{flex-direction:column;text-align:center}
+  .info-klinik-meta{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- KONFIGURASI KLINIK — ubah sesuai data klinik Anda -->
+<script>
+const KLINIK = {
+  nama: 'KLINIK dr. Firman Munir',
+  alamat: 'Jl. Dr. Saharjo No.98C, Menteng Atas, Setiabudi, Jakarta Selatan 12960',
+  telepon: '021-8297462',
+  whatsapp: '62218297462',     // format: 628xxxxxxxxx
+  maps_url: 'https://maps.app.goo.gl/zLq9JRJ2FF3fmjyLA',
+  daftar_url: 'https://klinik-firmanmunir.id/daftar',  // URL link pendaftaran ini
+  kuota_per_slot: 3,           // kuota pasien per slot waktu
+  dokter: 'dr. Firman Munir',
+};
+</script>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div class="logo-text">
+        <div id="header-nama">Klinik Sehat</div>
+        <div class="logo-sub">Pendaftaran Online</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a id="btn-maps-header" href="#" class="btn-maps" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Maps</span>
+      </a>
+      <a id="btn-wa-header" href="#" class="btn-wa" target="_blank">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#15803d"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.484 2 12.017c0 1.99.531 3.86 1.449 5.47L2 22l4.671-1.415A9.933 9.933 0 0 0 12 22c5.522 0 10-4.483 10-10.001C22 6.484 17.522 2 11.999 2z"/></svg>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Info Klinik -->
+  <div class="info-klinik">
+    <div class="info-klinik-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+    </div>
+    <div class="info-klinik-detail">
+      <div class="info-klinik-name" id="ik-nama"></div>
+      <div class="info-klinik-meta">
+        <span class="meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span id="ik-alamat"></span></span>
+        <span class="meta-item"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.35 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.44 5.44l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg><span id="ik-telp"></span></span>
+        <span class="badge-jam">⏰ Pkl 11.00 – 18.00 WIB</span>
+        <span class="meta-item" style="color:var(--teal-dark);font-weight:600" id="ik-dokter"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progress-steps">
+      <div class="step-dot active" data-step="1"><div class="dot-circle">1</div><div class="dot-label">Tipe</div></div>
+      <div class="step-dot" data-step="2"><div class="dot-circle">2</div><div class="dot-label">Data Diri</div></div>
+      <div class="step-dot" data-step="3"><div class="dot-circle">3</div><div class="dot-label">Jadwal</div></div>
+      <div class="step-dot" data-step="4"><div class="dot-circle">4</div><div class="dot-label">Keluhan</div></div>
+      <div class="step-dot" data-step="5"><div class="dot-circle">✓</div><div class="dot-label">Antrian</div></div>
+    </div>
+  </div>
+
+  <!-- STEP 1: Pilih Tipe Pasien -->
+  <div id="step-1" class="card">
+    <div class="card-header">
+      <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div><div class="card-title">Pilih Tipe Pasien</div><div class="card-sub">Pilih identitas yang akan digunakan</div></div>
+    </div>
+    <div class="card-body">
+      <div class="type-grid">
+        <div class="type-card" id="type-dewasa" onclick="selectType('dewasa')">
+          <div class="type-icon">🧑</div>
+          <div class="type-name">Dewasa</div>
+          <div class="type-desc">Menggunakan KTP<br>(≥ 17 tahun)</div>
+        </div>
+        <div class="type-card" id="type-anak" onclick="selectType('anak')">
+          <div class="type-icon">👶</div>
+          <div class="type-name">Anak / Bayi</div>
+          <div class="type-desc">Menggunakan KIA<br>(&lt; 17 tahun)</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goStep(2)">
+          Lanjutkan
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Data Diri -->
+  <div id="step-2" class="card" style="display:none">
+    <div class="card-header">
+      <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+      <div><div class="card-title">Data Diri Pasien</div><div class="card-sub" id="step2-sub">Isi sesuai KTP</div></div>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-info">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span id="alert-ktp-text">Pastikan data sesuai dengan KTP yang berlaku</span>
+      </div>
+      <!-- Dewasa Form -->
+      <div id="form-dewasa">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>NIK (No. KTP) <span>*</span></label>
+            <input type="tel" id="nik" maxlength="16" placeholder="16 digit NIK" oninput="validateNIK(this)">
+            <div class="nik-hint">Contoh: 3175xxxxxxxxxxxx</div>
+            <div class="err-msg" id="err-nik"></div>
+          </div>
+          <div class="form-group full">
+            <label>Nama Lengkap (sesuai KTP) <span>*</span></label>
+            <input type="text" id="nama" placeholder="Nama lengkap tanpa gelar">
+            <div class="err-msg" id="err-nama"></div>
+          </div>
+          <div class="form-group">
+            <label>Tanggal Lahir <span>*</span></label>
+            <input type="date" id="tgl-lahir" max="">
+            <div class="err-msg" id="err-tgl-lahir"></div>
+          </div>
+          <div class="form-group">
+            <label>Jenis Kelamin <span>*</span></label>
+            <select id="jenis-kelamin">
+              <option value="">-- Pilih --</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+            <div class="err-msg" id="err-jk"></div>
+          </div>
+          <div class="form-group full">
+            <label>Alamat Sesuai KTP <span>*</span></label>
+            <textarea id="alamat" rows="2" placeholder="Jl. ... Kecamatan ... Kota/Kab ..."></textarea>
+            <div class="err-msg" id="err-alamat"></div>
+          </div>
+          <div class="form-group">
+            <label>No. HP (WhatsApp) <span>*</span></label>
+            <input type="tel" id="hp" placeholder="08xxxxxxxxxx" maxlength="14">
+            <div class="err-msg" id="err-hp"></div>
+          </div>
+          <div class="form-group">
+            <label>Kunjungan Pertama?</label>
+            <select id="kunjungan">
+              <option value="Pertama">Pasien Baru</option>
+              <option value="Lanjutan">Pasien Lama</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- Anak Form -->
+      <div id="form-anak" style="display:none">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>No. KIA (Kartu Identitas Anak) <span>*</span></label>
+            <input type="tel" id="nik-anak" maxlength="16" placeholder="16 digit No. KIA" oninput="validateNIK(this)">
+            <div class="nik-hint">Tercantum di Kartu Identitas Anak</div>
+            <div class="err-msg" id="err-nik-anak"></div>
+          </div>
+          <div class="form-group full">
+            <label>Nama Anak (sesuai KIA) <span>*</span></label>
+            <input type="text" id="nama-anak" placeholder="Nama lengkap anak">
+            <div class="err-msg" id="err-nama-anak"></div>
+          </div>
+          <div class="form-group">
+            <label>Tanggal Lahir Anak <span>*</span></label>
+            <input type="date" id="tgl-lahir-anak" max="">
+            <div class="err-msg" id="err-tgl-lahir-anak"></div>
+          </div>
+          <div class="form-group">
+            <label>Jenis Kelamin <span>*</span></label>
+            <select id="jk-anak">
+              <option value="">-- Pilih --</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+            <div class="err-msg" id="err-jk-anak"></div>
+          </div>
+          <div class="form-group full">
+            <label>Nama Orang Tua / Wali <span>*</span></label>
+            <input type="text" id="nama-ortu" placeholder="Nama lengkap orang tua/wali">
+            <div class="err-msg" id="err-ortu"></div>
+          </div>
+          <div class="form-group">
+            <label>No. HP Orang Tua (WhatsApp) <span>*</span></label>
+            <input type="tel" id="hp-ortu" placeholder="08xxxxxxxxxx" maxlength="14">
+            <div class="err-msg" id="err-hp-ortu"></div>
+          </div>
+          <div class="form-group">
+            <label>Hubungan dengan Anak</label>
+            <select id="hubungan">
+              <option value="Ayah">Ayah</option>
+              <option value="Ibu">Ibu</option>
+              <option value="Wali">Wali</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(1)">
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></span>
+          Kembali
+        </button>
+        <button class="btn btn-primary" onclick="validateStep2()">
+          Lanjutkan
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Pilih Jadwal -->
+  <div id="step-3" class="card" style="display:none">
+    <div class="card-header">
+      <div class="card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <div><div class="card-title">Pilih Jadwal Kunjungan</div><div class="card-sub">Pilih tanggal dan jam yang tersedia</div></div>
+    </div>
+    <div class="card-body">
+      <!-- Pilih Tanggal -->
+      <div style="margin-bottom:4px;font-size:12px;font-weight:600;color:var(--slate)">Pilih Tanggal</div>
+      <div class="tanggal-wrap" id="tanggal-wrap"></div>
+      <!-- Slot Jam -->
+      <div class="jadwal-header">
+        <div style="font-size:12px;font-weight:600;color:var(--slate)">Pilih Jam Pemeriksaan</div>
+        <div class="jadwal-date" id="jadwal-tanggal-label"></div>
+      </div>
+      <div class="slot-grid" id="slot-grid"></div>
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div> Dipilih</div>
+        <div class="leg"><div class="leg-dot" style="border:1.5px solid var(--border);background:#fff"></div> Tersedia</div>
+        <div class="leg"><div class="leg-dot" style="background:#f1f5f9"></div> Penuh</div>
+      </div>
+      <div class="err-msg" id="err-slot" style="margin-top:10px;font-size:13px"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(2)">
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></span>
+          Kembali
+        </button>
+        <button class="btn btn-primary" onclick="validateStep3()">
+          Lanjutkan
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Keluhan -->
+  <div id="step-4" class="card" style="display:none">
+    <div class="card-header">
+      <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+      <div><div class="card-title">Keluhan & Keperluan</div><div class="card-sub">Isi keluhan utama pasien</div></div>
+    </div>
+    <div class="card-body">
+      <div style="margin-bottom:10px;font-size:12px;font-weight:600;color:var(--slate)">Keluhan Umum (pilih yang sesuai)</div>
+      <div class="keluhan-chips" id="keluhan-chips"></div>
+      <div class="form-group" style="margin-top:12px">
+        <label>Keluhan Lainnya / Keterangan Tambahan</label>
+        <textarea id="keluhan-lain" rows="3" placeholder="Jelaskan keluhan atau keperluan kunjungan Anda..."></textarea>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label>Alergi Obat (jika ada)</label>
+        <input type="text" id="alergi" placeholder="Contoh: Penisilin, Amoksisilin, atau kosongkan jika tidak ada">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goStep(3)">
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg></span>
+          Kembali
+        </button>
+        <button class="btn btn-primary" onclick="submitDaftar()">
+          Daftarkan Sekarang
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Sukses & Nomor Antrian -->
+  <div id="step-5" class="card" style="display:none">
+    <div class="card-header">
+      <div class="card-icon" style="background:#dcfce7"><svg viewBox="0 0 24 24" style="stroke:var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div><div class="card-title">Pendaftaran Berhasil!</div><div class="card-sub">Nomor antrian Anda telah dibuat</div></div>
+    </div>
+    <div class="card-body">
+      <div class="antrian-wrap">
+        <div class="antrian-badge">No. Antrian Hari Ini</div>
+        <div class="antrian-number" id="no-antrian">A-001</div>
+        <div class="antrian-sub" id="antrian-sub">Harap datang 15 menit sebelum jadwal</div>
+      </div>
+
+      <div class="antrian-info" id="antrian-info"></div>
+
+      <div class="action-buttons">
+        <button class="action-btn action-wa" onclick="kirimWA()">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.484 2 12.017c0 1.99.531 3.86 1.449 5.47L2 22l4.671-1.415A9.933 9.933 0 0 0 12 22c5.522 0 10-4.483 10-10.001C22 6.484 17.522 2 11.999 2z"/></svg>
+          Konfirmasi via WhatsApp
+        </button>
+        <a class="action-btn action-maps" id="btn-maps-antrian" href="#" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Lihat di Google Maps
+        </a>
+      </div>
+
+      <!-- QR Code -->
+      <div class="qr-section">
+        <div class="qr-title">QR Code Pendaftaran Online</div>
+        <div class="qr-sub">Scan untuk akses cepat halaman pendaftaran ini</div>
+        <div id="qrcode"></div>
+        <div class="qr-link" id="qr-link-text"></div>
+      </div>
+
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-secondary" style="flex:1;justify-content:center" onclick="daftarBaru()">
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          Daftarkan Pasien Lain
+        </button>
+        <button class="btn btn-primary" onclick="cetakAntrian()">
+          <span class="btn-icon"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></span>
+          Cetak Bukti
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Init ──────────────────────────────────────────────────────────────
+document.getElementById('header-nama').textContent = KLINIK.nama;
+document.getElementById('ik-nama').textContent = KLINIK.nama;
+document.getElementById('ik-alamat').textContent = KLINIK.alamat;
+document.getElementById('ik-telp').textContent = KLINIK.telepon;
+document.getElementById('ik-dokter').textContent = '👨‍⚕️ ' + KLINIK.dokter;
+document.getElementById('btn-maps-header').href = KLINIK.maps_url;
+document.getElementById('btn-wa-header').href = 'https://wa.me/' + KLINIK.whatsapp;
+document.getElementById('btn-maps-antrian').href = KLINIK.maps_url;
+document.getElementById('qr-link-text').textContent = KLINIK.daftar_url;
+
+// Set max date for birth
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
+document.querySelectorAll('input[type=date]').forEach(el => el.max = todayStr);
+
+// ── State ─────────────────────────────────────────────────────────────
+let state = {
+  tipe: 'dewasa',
+  selectedSlot: null,
+  selectedTanggal: null,
+  keluhanPilihan: [],
+  noAntrian: null,
+  dataPasien: {}
+};
+
+// ── Keluhan chips ─────────────────────────────────────────────────────
+const keluhanList = ['Demam','Batuk','Pilek','Sakit Kepala','Sakit Perut','Mual/Muntah',
+  'Diare','Lemas/Pusing','Gatal/Ruam Kulit','Nyeri Sendi','Kontrol Rutin','Pemeriksaan Umum',
+  'Periksa Tekanan Darah','Ambil Surat Rujukan','Lainnya'];
+const chipsWrap = document.getElementById('keluhan-chips');
+keluhanList.forEach(k => {
+  const c = document.createElement('div');
+  c.className = 'chip'; c.textContent = k;
+  c.onclick = () => {
+    c.classList.toggle('selected');
+    if(c.classList.contains('selected')) state.keluhanPilihan.push(k);
+    else state.keluhanPilihan = state.keluhanPilihan.filter(x=>x!==k);
+  };
+  chipsWrap.appendChild(c);
+});
+
+// ── Step 1: Pilih Tipe ────────────────────────────────────────────────
+function selectType(t) {
+  state.tipe = t;
+  document.getElementById('type-dewasa').classList.toggle('selected', t==='dewasa');
+  document.getElementById('type-anak').classList.toggle('selected', t==='anak');
+}
+selectType('dewasa');
+
+// ── Jadwal / Tanggal ──────────────────────────────────────────────────
+const HARI = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const TIME_SLOTS = [
+  '11:00','11:30','12:00','12:30','13:00','13:30',
+  '14:00','14:30','15:00','15:30','16:00','16:30',
+  '17:00','17:30'
+];
+
+function buildTanggalPicker() {
+  const wrap = document.getElementById('tanggal-wrap');
+  wrap.innerHTML = '';
+  for(let i=0;i<5;i++){
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    const btn = document.createElement('div');
+    btn.className = 'tanggal-btn' + (i===0?' active':'');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = BULAN[d.getMonth()];
+    btn.innerHTML = `<span class="tgl-num">${dd}</span><span class="tgl-hari">${HARI[d.getDay()]} ${mm}</span>`;
+    const iso = d.toISOString().split('T')[0];
+    btn.onclick = () => {
+      document.querySelectorAll('.tanggal-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      state.selectedTanggal = iso;
+      state.selectedSlot = null;
+      buildSlotGrid(iso);
+      document.getElementById('jadwal-tanggal-label').textContent = `${HARI[d.getDay()]}, ${dd} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+    };
+    if(i===0){
+      state.selectedTanggal = iso;
+      document.getElementById('jadwal-tanggal-label').textContent = `${HARI[d.getDay()]}, ${dd} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+    }
+    wrap.appendChild(btn);
+  }
+  buildSlotGrid(state.selectedTanggal);
+}
+
+function getBookedSlots(tanggalStr) {
+  const key = 'klinik_slots_' + tanggalStr;
+  try { return JSON.parse(localStorage.getItem(key)||'{}'); } catch(e){return {};}
+}
+
+function buildSlotGrid(tanggalStr) {
+  const grid = document.getElementById('slot-grid');
+  grid.innerHTML = '';
+  const booked = getBookedSlots(tanggalStr);
+  const now = new Date();
+  const isToday = tanggalStr === todayStr;
+
+  TIME_SLOTS.forEach(t => {
+    const div = document.createElement('div');
+    const [h,m] = t.split(':').map(Number);
+    const slotDate = new Date(tanggalStr);
+    slotDate.setHours(h,m,0,0);
+    const count = booked[t] || 0;
+    const isFull = count >= KLINIK.kuota_per_slot;
+    const isPast = isToday && slotDate <= now;
+
+    if(isFull || isPast) {
+      div.className = 'slot taken';
+      div.innerHTML = `<span class="slot-time">${t}</span><span class="slot-count">${isPast?'Lewat':'Penuh'}</span>`;
+    } else {
+      div.className = 'slot' + (state.selectedSlot===t?' selected':'');
+      div.innerHTML = `<span class="slot-time">${t}</span><span class="slot-count">Sisa ${KLINIK.kuota_per_slot-count}</span>`;
+      div.onclick = () => {
+        document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+        div.classList.add('selected');
+        state.selectedSlot = t;
+        document.getElementById('err-slot').textContent = '';
+      };
+    }
+    grid.appendChild(div);
+  });
+}
+
+// ── Step Navigation ───────────────────────────────────────────────────
+function goStep(n) {
+  for(let i=1;i<=5;i++) {
+    const el = document.getElementById('step-'+i);
+    if(el) el.style.display = i===n ? 'block' : 'none';
+  }
+  updateProgress(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if(n===2) {
+    const isDewasa = state.tipe==='dewasa';
+    document.getElementById('form-dewasa').style.display = isDewasa?'block':'none';
+    document.getElementById('form-anak').style.display = isDewasa?'none':'block';
+    document.getElementById('step2-sub').textContent = isDewasa?'Isi sesuai KTP':'Isi sesuai Kartu Identitas Anak (KIA)';
+    document.getElementById('alert-ktp-text').textContent = isDewasa?
+      'Pastikan data sesuai dengan KTP yang berlaku':
+      'Isi data anak sesuai KIA dan data orang tua/wali';
+  }
+  if(n===3) buildTanggalPicker();
+}
+
+function updateProgress(active) {
+  document.querySelectorAll('.step-dot').forEach(d => {
+    const s = parseInt(d.dataset.step);
+    d.classList.remove('active','done');
+    if(s===active) d.classList.add('active');
+    else if(s<active) d.classList.add('done');
+  });
+}
+
+// ── Validation ────────────────────────────────────────────────────────
+function validateNIK(el) {
+  el.value = el.value.replace(/\D/g,'');
+}
+function setErr(id,msg){
+  const el=document.getElementById(id);
+  if(el)el.textContent=msg;
+}
+function clearErr(id){setErr(id,'');}
+function markErr(fieldId,errId,msg){
+  const el=document.getElementById(fieldId);
+  if(el)el.classList.add('err');
+  setErr(errId,msg); return false;
+}
+function clearField(fieldId,errId){
+  const el=document.getElementById(fieldId);
+  if(el)el.classList.remove('err');
+  clearErr(errId);
+}
+
+function validateStep2() {
+  let ok=true;
+  if(state.tipe==='dewasa'){
+    const nik=document.getElementById('nik').value.trim();
+    if(nik.length!==16){ok=markErr('nik','err-nik','NIK harus 16 digit');} else clearField('nik','err-nik');
+    const nama=document.getElementById('nama').value.trim();
+    if(!nama){ok=markErr('nama','err-nama','Nama tidak boleh kosong');} else clearField('nama','err-nama');
+    const tgl=document.getElementById('tgl-lahir').value;
+    if(!tgl){ok=markErr('tgl-lahir','err-tgl-lahir','Pilih tanggal lahir');} else clearField('tgl-lahir','err-tgl-lahir');
+    const jk=document.getElementById('jenis-kelamin').value;
+    if(!jk){ok=markErr('jenis-kelamin','err-jk','Pilih jenis kelamin');} else clearField('jenis-kelamin','err-jk');
+    const alamat=document.getElementById('alamat').value.trim();
+    if(alamat.length<10){ok=markErr('alamat','err-alamat','Isi alamat lengkap');} else clearField('alamat','err-alamat');
+    const hp=document.getElementById('hp').value.trim();
+    if(!/^08\d{8,11}$/.test(hp)){ok=markErr('hp','err-hp','Format: 08xxxxxxxxxx (10-13 digit)');} else clearField('hp','err-hp');
+  } else {
+    const nik=document.getElementById('nik-anak').value.trim();
+    if(nik.length!==16){ok=markErr('nik-anak','err-nik-anak','No. KIA harus 16 digit');} else clearField('nik-anak','err-nik-anak');
+    const nama=document.getElementById('nama-anak').value.trim();
+    if(!nama){ok=markErr('nama-anak','err-nama-anak','Nama anak tidak boleh kosong');} else clearField('nama-anak','err-nama-anak');
+    const tgl=document.getElementById('tgl-lahir-anak').value;
+    if(!tgl){ok=markErr('tgl-lahir-anak','err-tgl-lahir-anak','Pilih tanggal lahir');} else clearField('tgl-lahir-anak','err-tgl-lahir-anak');
+    const jk=document.getElementById('jk-anak').value;
+    if(!jk){ok=markErr('jk-anak','err-jk-anak','Pilih jenis kelamin');} else clearField('jk-anak','err-jk-anak');
+    const ortu=document.getElementById('nama-ortu').value.trim();
+    if(!ortu){ok=markErr('nama-ortu','err-ortu','Isi nama orang tua/wali');} else clearField('nama-ortu','err-ortu');
+    const hp=document.getElementById('hp-ortu').value.trim();
+    if(!/^08\d{8,11}$/.test(hp)){ok=markErr('hp-ortu','err-hp-ortu','Format: 08xxxxxxxxxx');} else clearField('hp-ortu','err-hp-ortu');
+  }
+  if(ok) goStep(3);
+}
+
+function validateStep3() {
+  if(!state.selectedSlot){
+    document.getElementById('err-slot').textContent='⚠ Pilih jam pemeriksaan terlebih dahulu';
+    return;
+  }
+  goStep(4);
+}
+
+// ── Generate Queue Number ─────────────────────────────────────────────
+function generateAntrian(tanggal) {
+  const key = 'klinik_antrian_' + tanggal;
+  let counter = parseInt(localStorage.getItem(key)||'0') + 1;
+  localStorage.setItem(key, counter);
+  return 'A-' + String(counter).padStart(3,'0');
+}
+
+function bookSlot(tanggal, slot) {
+  const key = 'klinik_slots_' + tanggal;
+  const booked = getBookedSlots(tanggal);
+  booked[slot] = (booked[slot]||0) + 1;
+  localStorage.setItem(key, JSON.stringify(booked));
+}
+
+// ── Submit ────────────────────────────────────────────────────────────
+function submitDaftar() {
+  const isDewasa = state.tipe==='dewasa';
+  const noAntrian = generateAntrian(state.selectedTanggal);
+  bookSlot(state.selectedTanggal, state.selectedSlot);
+  state.noAntrian = noAntrian;
+
+  if(isDewasa){
+    state.dataPasien = {
+      tipe:'Dewasa',
+      nik: document.getElementById('nik').value.trim(),
+      nama: document.getElementById('nama').value.trim(),
+      tglLahir: document.getElementById('tgl-lahir').value,
+      jk: document.getElementById('jenis-kelamin').value,
+      alamat: document.getElementById('alamat').value.trim(),
+      hp: document.getElementById('hp').value.trim(),
+      kunjungan: document.getElementById('kunjungan').value,
+    };
+  } else {
+    state.dataPasien = {
+      tipe:'Anak',
+      nik: document.getElementById('nik-anak').value.trim(),
+      nama: document.getElementById('nama-anak').value.trim(),
+      tglLahir: document.getElementById('tgl-lahir-anak').value,
+      jk: document.getElementById('jk-anak').value,
+      namaOrtu: document.getElementById('nama-ortu').value.trim(),
+      hubungan: document.getElementById('hubungan').value,
+      hp: document.getElementById('hp-ortu').value.trim(),
+    };
+  }
+  state.dataPasien.keluhan = [...state.keluhanPilihan];
+  state.dataPasien.keluhanLain = document.getElementById('keluhan-lain').value.trim();
+  state.dataPasien.alergi = document.getElementById('alergi').value.trim();
+  state.dataPasien.slot = state.selectedSlot;
+  state.dataPasien.tanggal = state.selectedTanggal;
+
+  renderAntrian();
+  goStep(5);
+  setTimeout(()=>generateQR(),400);
+}
+
+// ── Render Antrian Card ───────────────────────────────────────────────
+function formatDate(str) {
+  const d = new Date(str);
+  return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function renderAntrian() {
+  document.getElementById('no-antrian').textContent = state.noAntrian;
+  document.getElementById('antrian-sub').textContent = `Jadwal: ${formatDate(state.dataPasien.tanggal)} pukul ${state.dataPasien.slot} WIB`;
+
+  const dp = state.dataPasien;
+  const keluhan = [...dp.keluhan, dp.keluhanLain].filter(Boolean).join(', ') || '-';
+  const rows = dp.tipe==='Dewasa' ? [
+    ['Nama Pasien', dp.nama],
+    ['NIK KTP', dp.nik],
+    ['Jenis Kelamin', dp.jk],
+    ['Tanggal Lahir', formatDate(dp.tglLahir)],
+    ['No. HP / WA', dp.hp],
+    ['Tipe Kunjungan', dp.kunjungan],
+    ['Tanggal Periksa', formatDate(dp.tanggal)],
+    ['Jam', dp.slot + ' WIB'],
+    ['Dokter', KLINIK.dokter],
+    ['Keluhan', keluhan],
+    ['Alergi', dp.alergi||'-'],
+    ['No. Antrian', state.noAntrian],
+  ] : [
+    ['Nama Anak', dp.nama],
+    ['No. KIA', dp.nik],
+    ['Jenis Kelamin', dp.jk],
+    ['Tanggal Lahir', formatDate(dp.tglLahir)],
+    ['Nama '+dp.hubungan, dp.namaOrtu],
+    ['No. HP / WA', dp.hp],
+    ['Tanggal Periksa', formatDate(dp.tanggal)],
+    ['Jam', dp.slot + ' WIB'],
+    ['Dokter', KLINIK.dokter],
+    ['Keluhan', keluhan],
+    ['Alergi', dp.alergi||'-'],
+    ['No. Antrian', state.noAntrian],
+  ];
+
+  document.getElementById('antrian-info').innerHTML = rows.map(([l,v])=>
+    `<div class="info-row"><span class="info-label">${l}</span><span class="info-val">${v}</span></div>`
+  ).join('');
+}
+
+// ── WhatsApp ──────────────────────────────────────────────────────────
+function kirimWA() {
+  const dp = state.dataPasien;
+  const keluhan = [...dp.keluhan, dp.keluhanLain].filter(Boolean).join(', ') || '-';
+  const ibu = dp.tipe==='Anak' ? `\nNama Orang Tua: ${dp.namaOrtu} (${dp.hubungan})` : '';
+  const msg = [
+    `✅ *KONFIRMASI PENDAFTARAN ONLINE*`,
+    `${KLINIK.nama}`,
+    ``,
+    `🔖 *No. Antrian: ${state.noAntrian}*`,
+    ``,
+    `👤 *DATA PASIEN*`,
+    `Nama     : ${dp.nama}`,
+    `NIK/KIA  : ${dp.nik}`,
+    `Kelamin  : ${dp.jk}${ibu}`,
+    `No. HP   : ${dp.hp}`,
+    ``,
+    `📅 *JADWAL KUNJUNGAN*`,
+    `Tanggal  : ${formatDate(dp.tanggal)}`,
+    `Jam      : ${dp.slot} WIB`,
+    `Dokter   : ${KLINIK.dokter}`,
+    ``,
+    `🩺 Keluhan: ${keluhan}`,
+    dp.alergi ? `⚠️ Alergi: ${dp.alergi}` : '',
+    ``,
+    `📍 Lokasi: ${KLINIK.maps_url}`,
+    ``,
+    `Mohon hadir 15 menit sebelum jadwal.`,
+    `Terima kasih! 🙏`,
+  ].filter(l=>l!=='undefined' && l!==undefined).join('\n');
+
+  window.open('https://wa.me/'+KLINIK.whatsapp+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+// ── QR Code ───────────────────────────────────────────────────────────
+function generateQR() {
+  const el = document.getElementById('qrcode');
+  el.innerHTML = '';
+  try {
+    new QRCode(el, {
+      text: KLINIK.daftar_url,
+      width: 160, height: 160,
+      colorDark: '#0d9488', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } catch(e) { el.textContent = 'QR tidak tersedia'; }
+}
+
+// ── Cetak ─────────────────────────────────────────────────────────────
+function cetakAntrian() { window.print(); }
+
+// ── Reset ─────────────────────────────────────────────────────────────
+function daftarBaru() {
+  state = { tipe:'dewasa', selectedSlot:null, selectedTanggal:null, keluhanPilihan:[], noAntrian:null, dataPasien:{} };
+  document.querySelectorAll('input:not([type=date]),select,textarea').forEach(el=>{ el.value=''; el.classList.remove('err'); });
+  document.querySelectorAll('input[type=date]').forEach(el=>el.value='');
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.err-msg').forEach(e=>e.textContent='');
+  selectType('dewasa');
+  document.getElementById('qrcode').innerHTML='';
+  goStep(1);
+}
+
+// ── Print CSS ─────────────────────────────────────────────────────────
+const printStyle = document.createElement('style');
+printStyle.textContent = `@media print{body{background:#fff}.header,.progress-wrap,.action-buttons,.btn-row,.btn-maps,.btn-wa{display:none!important}.card{box-shadow:none;border:1px solid #ccc}.antrian-number{color:#000}#step-1,#step-2,#step-3,#step-4{display:none!important}#step-5{display:block!important}}`;
+document.head.appendChild(printStyle);
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 # 🏥 Sistem Pendaftaran Online
-Aplikasi berbasis web (Client-Side) yang dirancang untuk mempermudah proses pendaftaran pasien secara mandiri di Klinik. Project ini dibuat menggunakan HTML5, CSS3 (Tailwind-inspired styling), dan JavaScript.
+Aplikasi berbasis web yang dirancang untuk mempermudah proses pendaftaran pasien secara mandiri di Klinik. Project ini dibuat menggunakan HTML5, CSS3 (Tailwind-inspired styling), dan JavaScript.
 
 ## 🚀 Live Demo
 🔗 [Lihat Web Pendaftaran Di Sini](https://nabilsyah57.github.io/clinic-online-registration-system) 

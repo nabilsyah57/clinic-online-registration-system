@@ -11,6 +11,10 @@ Aplikasi berbasis web yang dirancang untuk mempermudah proses pendaftaran pasien
 - **Konfirmasi WhatsApp:** Menghasilkan teks otomatis terformat tebal/miring untuk dikirim langsung ke WhatsApp admin klinik.
 - **Fitur Cetak Mandiri:** Layout otomatis menyesuaikan (*print-optimized*) saat pasien ingin mencetak bukti antrian.
 
+#  AI-Assisted Development Notice
+
+This project was created using AI-assisted development tools to accelerate coding, documentation, and problem-solving processes. All project requirements, architecture decisions, feature selection, testing, debugging, and final implementation were reviewed and managed by the developer.
+
 ## ⚙️ Cara Konfigurasi (Untuk Pengelola Klinik)
 Buka file `index.html` dan sesuaikan objek `KLINIK` pada baris awal tag `<script>` dengan data klinik Anda:
 
@@ -25,13 +29,3 @@ const KLINIK = {
   kuota_per_slot: 3, // Batas pasien per jam
   dokter: 'Nama Dokter yang Bertugas',
 };
-
-
-
-
-
-
-#  AI-Assisted Development Notice
-
-This project was created using AI-assisted development tools to accelerate coding, documentation, and problem-solving processes. All project requirements, architecture decisions, feature selection, testing, debugging, and final implementation were reviewed and managed by the developer.
-
